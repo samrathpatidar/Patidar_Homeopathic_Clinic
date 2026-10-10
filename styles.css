@@ -884,3 +884,175 @@ textarea { resize: vertical; }
   .mapper-matched, .mapper-unmatched { display: none; }
   .import-stats { grid-template-columns: 1fr 1fr; }
 }
+
+/* ─── LOGIN PAGE ─────────────────────────────────────────────── */
+body.logged-out { background: linear-gradient(135deg, #e8f5ee 0%, #dff0f8 100%); }
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.login-card {
+  background: var(--white);
+  border-radius: 20px;
+  box-shadow: 0 8px 48px rgba(46,125,94,.18), 0 2px 8px rgba(0,0,0,.06);
+  padding: 2.75rem 2.5rem 2rem;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: .5rem;
+}
+
+.login-logo { margin-bottom: .5rem; }
+.login-logo-img {
+  width: 200px;
+  height: auto;
+  object-fit: contain;
+}
+
+.login-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1565C0;
+  line-height: 1.3;
+  margin-top: .25rem;
+}
+
+.login-subtitle {
+  font-size: .85rem;
+  color: var(--text-muted);
+  margin-bottom: .75rem;
+}
+
+#login-form {
+  width: 100%;
+  margin-top: .75rem;
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+}
+
+#login-form .form-group { text-align: left; }
+
+.pwd-toggle {
+  position: absolute;
+  right: .6rem;
+  bottom: .45rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--text-muted);
+  padding: .2rem .3rem;
+  border-radius: 6px;
+  transition: background var(--transition);
+}
+.pwd-toggle:hover { background: var(--brand-light); }
+
+.btn-login {
+  width: 100%;
+  padding: .75rem;
+  font-size: 1rem;
+  justify-content: center;
+  margin-top: .5rem;
+  border-radius: var(--radius);
+}
+
+.login-error {
+  color: var(--danger);
+  font-size: .83rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
+  padding: .55rem .85rem;
+  text-align: left;
+  margin: 0;
+}
+
+.login-footer-note {
+  font-size: .75rem;
+  color: #b0bab5;
+  margin-top: 1.25rem;
+}
+
+/* ─── TOPBAR LOGO ─────────────────────────────────────────────── */
+.topbar-logo {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+/* ─── QUICK ACTIONS STANDALONE (Dashboard) ───────────────────── */
+.quick-actions-standalone {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-top: 1rem;
+}
+.qa-heading {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: .75rem;
+}
+
+/* ─── TOAST NOTIFICATION ─────────────────────────────────────── */
+.app-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  background: #1a2b22;
+  color: #fff;
+  padding: .75rem 1.5rem;
+  border-radius: 999px;
+  font-size: .88rem;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0,0,0,.25);
+  z-index: 1000;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+  white-space: nowrap;
+}
+.app-toast--show { transform: translateX(-50%) translateY(0); }
+.app-toast--success { background: var(--brand); }
+.app-toast--error   { background: var(--danger); }
+
+/* ─── RESPONSIVE LOGIN ───────────────────────────────────────── */
+@media (max-width: 480px) {
+  .login-card { padding: 2rem 1.5rem 1.5rem; }
+  .login-logo-img { width: 160px; }
+  .login-title { font-size: 1.05rem; }
+}
+
+/* ─── LOGIN LOGO FALLBACK ─────────────────────────────────────── */
+.login-logo-fallback {
+  width: 200px;
+  height: 100px;
+  align-items: center;
+  justify-content: center;
+}
+.login-logo-circle {
+  width: 80px; height: 80px;
+  background: var(--brand-light);
+  border: 3px solid var(--brand);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  margin: 0 auto;
+}
