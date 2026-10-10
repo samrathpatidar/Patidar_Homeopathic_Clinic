@@ -406,43 +406,23 @@
           </div>
         </fieldset>
 
-        <!-- Medicine Log -->
+        <!-- Medicine Log — single text area -->
         <fieldset class="form-section">
           <legend>Medicine Log</legend>
-          <div class="table-wrap">
-            <table class="data-table" id="rxMedTable">
-              <thead>
-                <tr>
-                  <th>Medicine <span class="req">*</span></th>
-                  <th>Quantity</th><th>Dose</th><th>Frequency</th><th></th>
-                </tr>
-              </thead>
-              <tbody id="rxMedTbody">
-                <tr>
-                  <td><input type="text" placeholder="Medicine name" list="med-datalist" /></td>
-                  <td><input type="text" placeholder="e.g. 1 bottle" /></td>
-                  <td><input type="text" placeholder="e.g. 5 drops" /></td>
-                  <td><input type="text" placeholder="e.g. Twice daily" /></td>
-                  <td><button type="button" class="icon-btn remove-row">✕</button></td>
-                </tr>
-              </tbody>
-            </table>
-            <datalist id="med-datalist"></datalist>
-            <button type="button" class="add-row-btn" onclick="addMedRow()">+ Add Medicine</button>
+          <div class="form-group">
+            <label for="rxMedicines">Medicines &amp; Instructions</label>
+            <textarea id="rxMedicines" rows="5"
+              placeholder="e.g. Arnica Montana 30C – 5 drops, twice daily&#10;Belladonna 200 – 3 pills, morning&#10;Nux Vomica 30 – 5 drops, before bed"></textarea>
           </div>
         </fieldset>
 
-        <!-- Course Details -->
+        <!-- Course Details (no Next Appointment) -->
         <fieldset class="form-section">
           <legend>Course Details</legend>
           <div class="form-grid">
             <div class="form-group">
               <label for="rxDuration">Course Duration (Days) <span class="req">*</span></label>
               <input type="number" id="rxDuration" placeholder="Days" min="1" required />
-            </div>
-            <div class="form-group">
-              <label for="rxNextAppt">Next Appointment</label>
-              <input type="date" id="rxNextAppt" />
             </div>
             <div class="form-group">
               <label for="rxFees">Fees <span class="req">*</span></label>
@@ -482,14 +462,14 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>#</th><th>Patient Name</th><th>Age</th><th>Gender</th>
+                <th>#</th><th>Date</th><th>Patient Name</th><th>Age</th><th>Gender</th>
                 <th>Past Conditions</th><th>Current Symptoms</th>
                 <th>BP</th><th>Sugar</th><th>Weight</th>
                 <th>Medicine Log</th><th>Duration (Days)</th><th>Fees</th><th>Actions</th>
               </tr>
             </thead>
             <tbody id="all-prescriptions-tbody">
-              <tr class="empty-row"><td colspan="13">No prescriptions found — import from Excel</td></tr>
+              <tr class="empty-row"><td colspan="14">No prescriptions found — import from Excel</td></tr>
             </tbody>
           </table>
         </div>
@@ -603,6 +583,93 @@
   </footer>
 
 </div><!-- /#app -->
+
+<!-- ══════════════════════════════════════════════════════════
+     EDIT PATIENT MODAL
+══════════════════════════════════════════════════════════ -->
+<div id="edit-patient-modal" class="modal-overlay" role="dialog" aria-modal="true"
+     aria-labelledby="edit-patient-title" hidden>
+  <div class="modal">
+    <div class="modal-header">
+      <div><h2 id="edit-patient-title">Edit Patient</h2></div>
+      <button class="modal-close" onclick="closeEditModal('edit-patient-modal')" aria-label="Close">✕</button>
+    </div>
+    <div class="import-step" style="overflow-y:auto;">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label for="ep-name">Patient Name <span class="req">*</span></label>
+          <input type="text" id="ep-name" required />
+        </div>
+        <div class="form-group">
+          <label for="ep-dob">Date of Birth</label>
+          <input type="date" id="ep-dob" onchange="updateEditAge()" />
+        </div>
+        <div class="form-group">
+          <label for="ep-age-display">Age (auto-calculated)</label>
+          <input type="text" id="ep-age-display" readonly />
+        </div>
+        <div class="form-group">
+          <label>Gender</label>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="ep-gender" value="Male" /> Male</label>
+            <label class="radio-label"><input type="radio" name="ep-gender" value="Female" /> Female</label>
+            <label class="radio-label"><input type="radio" name="ep-gender" value="Other" /> Other</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="ep-phone">Phone</label>
+          <div class="input-prefix-wrap">
+            <span class="input-prefix">+91</span>
+            <input type="tel" id="ep-phone" maxlength="10" />
+          </div>
+        </div>
+        <div class="form-group full-width">
+          <label for="ep-address">Address</label>
+          <textarea id="ep-address" rows="2"></textarea>
+        </div>
+        <div class="form-group full-width">
+          <label for="ep-conditions">Past Medical Conditions</label>
+          <textarea id="ep-conditions" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div style="flex:1"></div>
+      <button class="btn btn-secondary" onclick="closeEditModal('edit-patient-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditedPatient()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     EDIT MEDICINE MODAL
+══════════════════════════════════════════════════════════ -->
+<div id="edit-medicine-modal" class="modal-overlay" role="dialog" aria-modal="true"
+     aria-labelledby="edit-medicine-title" hidden>
+  <div class="modal">
+    <div class="modal-header">
+      <div><h2 id="edit-medicine-title">Edit Medicine</h2></div>
+      <button class="modal-close" onclick="closeEditModal('edit-medicine-modal')" aria-label="Close">✕</button>
+    </div>
+    <div class="import-step">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label for="em-name">Medicine Name <span class="req">*</span></label>
+          <input type="text" id="em-name" required />
+        </div>
+        <div class="form-group full-width">
+          <label for="em-instructions">Special Instructions</label>
+          <textarea id="em-instructions" rows="4"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div style="flex:1"></div>
+      <button class="btn btn-secondary" onclick="closeEditModal('edit-medicine-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditedMedicine()">Save Changes</button>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════════════════════════
      IMPORT MODAL

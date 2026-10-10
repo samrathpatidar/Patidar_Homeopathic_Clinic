@@ -123,6 +123,7 @@ const COLUMNS = {
     { key: 'conditions', label: 'Past Medical Conditions' },
   ],
   'all-prescriptions': [
+    { key: 'date',       label: 'Date' },
     { key: 'patient',    label: 'Patient Name' },
     { key: 'age',        label: 'Age' },
     { key: 'gender',     label: 'Gender' },
@@ -162,16 +163,19 @@ function renderTable(target) {
     tbody.innerHTML = `<tr class="empty-row"><td colspan="${cols.length + 2}">No data — add manually or import from Excel</td></tr>`;
     return;
   }
+  const canEdit = target === 'all-patients' || target === 'all-medicines';
   tbody.innerHTML = rows.map((row, i) => {
     const cells = cols.map(c => {
       let v = row[c.key] ?? '—';
       if (c.prefix && v !== '—') v = c.prefix + ' ' + Number(v).toLocaleString('en-IN');
-      // Truncate long text in cells
       const display = String(v).length > 60 ? String(v).slice(0, 60) + '…' : String(v);
       return `<td title="${String(v).replace(/"/g, '&quot;')}">${display}</td>`;
     }).join('');
-    return `<tr><td>${i + 1}</td>${cells}<td>
-      <button class="icon-btn" title="Delete" onclick="deleteRow('${target}',${i})">🗑️</button>
+    const editBtn = canEdit
+      ? `<button class="icon-btn" title="Edit" onclick="openEditModal('${target}',${i})">✏️</button> `
+      : '';
+    return `<tr><td>${i + 1}</td>${cells}<td style="white-space:nowrap;">
+      ${editBtn}<button class="icon-btn" title="Delete" onclick="deleteRow('${target}',${i})">🗑️</button>
     </td></tr>`;
   }).join('');
 }
@@ -186,6 +190,111 @@ function deleteRow(target, index) {
   if (target === 'all-patients') refreshDropdowns();
   updateDashboardStats();
 }
+
+/* ────────────────────────────────────────────────────────────
+   EDIT MODALS  –  Patient & Medicine
+   ──────────────────────────────────────────────────────────── */
+
+let _editTarget = null;
+let _editIndex  = null;
+
+function openEditModal(target, index) {
+  _editTarget = target;
+  _editIndex  = index;
+  const row = loadStore(target)[index];
+  if (!row) return;
+
+  if (target === 'all-patients') {
+    document.getElementById('ep-name').value       = row.name       || '';
+    document.getElementById('ep-dob').value        = row.dob        || '';
+    document.getElementById('ep-phone').value      = row.phone      || '';
+    document.getElementById('ep-address').value    = row.address    || '';
+    document.getElementById('ep-conditions').value = row.conditions || '';
+    // Age display
+    document.getElementById('ep-age-display').value = row.dob
+      ? calcAgeFromDOB(row.dob) + ' years' : (row.age ? row.age + ' years' : '');
+    // Gender radio
+    const genderVal = row.gender || '';
+    document.querySelectorAll('input[name="ep-gender"]').forEach(r => {
+      r.checked = (r.value === genderVal);
+    });
+    document.getElementById('edit-patient-modal').hidden = false;
+
+  } else if (target === 'all-medicines') {
+    document.getElementById('em-name').value         = row.name         || '';
+    document.getElementById('em-instructions').value = row.instructions || '';
+    document.getElementById('edit-medicine-modal').hidden = false;
+  }
+
+  document.body.style.overflow = 'hidden';
+}
+
+function closeEditModal(modalId) {
+  document.getElementById(modalId).hidden = true;
+  document.body.style.overflow = '';
+  _editTarget = null;
+  _editIndex  = null;
+}
+
+function updateEditAge() {
+  const dob = document.getElementById('ep-dob').value;
+  document.getElementById('ep-age-display').value = dob ? calcAgeFromDOB(dob) + ' years' : '';
+}
+
+function saveEditedPatient() {
+  const name = document.getElementById('ep-name').value.trim();
+  if (!name) { alert('Patient name is required.'); return; }
+
+  const dob    = document.getElementById('ep-dob').value;
+  const gender = document.querySelector('input[name="ep-gender"]:checked');
+  const rows   = loadStore('all-patients');
+
+  rows[_editIndex] = {
+    ...rows[_editIndex],            // keep any extra keys
+    name,
+    dob,
+    age:        calcAgeFromDOB(dob) || rows[_editIndex].age || '',
+    gender:     gender ? gender.value : (rows[_editIndex].gender || '—'),
+    phone:      document.getElementById('ep-phone').value.trim(),
+    address:    document.getElementById('ep-address').value.trim(),
+    conditions: document.getElementById('ep-conditions').value.trim(),
+  };
+
+  saveStore('all-patients', rows);
+  renderTable('all-patients');
+  refreshDropdowns();
+  closeEditModal('edit-patient-modal');
+  showToast('Patient updated successfully!');
+}
+
+function saveEditedMedicine() {
+  const name = document.getElementById('em-name').value.trim();
+  if (!name) { alert('Medicine name is required.'); return; }
+
+  const rows = loadStore('all-medicines');
+  rows[_editIndex] = {
+    ...rows[_editIndex],
+    name,
+    instructions: document.getElementById('em-instructions').value.trim(),
+  };
+
+  saveStore('all-medicines', rows);
+  renderTable('all-medicines');
+  refreshDropdowns();
+  closeEditModal('edit-medicine-modal');
+  showToast('Medicine updated successfully!');
+}
+
+// Close edit modals on overlay click or Escape
+document.addEventListener('click', e => {
+  if (e.target.id === 'edit-patient-modal')  closeEditModal('edit-patient-modal');
+  if (e.target.id === 'edit-medicine-modal') closeEditModal('edit-medicine-modal');
+});
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (!document.getElementById('edit-patient-modal').hidden)  closeEditModal('edit-patient-modal');
+  if (!document.getElementById('edit-medicine-modal').hidden) closeEditModal('edit-medicine-modal');
+});
 
 function filterTable(tbodyId, q) {
   const tbody = document.getElementById(tbodyId);
@@ -253,16 +362,6 @@ function savePatient(e) {
 
 function savePrescription(e) {
   e.preventDefault();
-  // Collect medicine log rows
-  const medRows = [];
-  document.querySelectorAll('#rxMedTbody tr').forEach(tr => {
-    const inputs = tr.querySelectorAll('input[type="text"]');
-    const name   = inputs[0]?.value.trim();
-    if (name) {
-      const parts = [name, inputs[1]?.value, inputs[2]?.value, inputs[3]?.value].filter(Boolean);
-      medRows.push(parts.join(' | '));
-    }
-  });
 
   const record = {
     patient:    document.getElementById('rxPatient').value,
@@ -276,9 +375,8 @@ function savePrescription(e) {
     bp:         document.getElementById('rxBP').value.trim(),
     sugar:      document.getElementById('rxSugar').value.trim(),
     weight:     document.getElementById('rxWeight').value,
-    medicines:  medRows.join('; '),
+    medicines:  document.getElementById('rxMedicines').value.trim(),
     duration:   document.getElementById('rxDuration').value,
-    nextAppt:   document.getElementById('rxNextAppt').value,
     fees:       document.getElementById('rxFees').value,
   };
 
@@ -375,20 +473,15 @@ function fillPatientData() {
 
 function resetRxForm() {
   document.getElementById('create-rx-form').reset();
-  // Reset readonly auto-fill fields
+  // Clear readonly auto-fill fields
   ['rxAge','rxGenderDisplay','rxPhone','rxAddress','rxPastConditions'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  // Reset medicine table to one blank row
-  const tb = document.getElementById('rxMedTbody');
-  if (tb) tb.innerHTML = `<tr>
-    <td><input type="text" placeholder="Medicine name" list="med-datalist"/></td>
-    <td><input type="text" placeholder="e.g. 1 bottle"/></td>
-    <td><input type="text" placeholder="e.g. 5 drops"/></td>
-    <td><input type="text" placeholder="e.g. Twice daily"/></td>
-    <td><button type="button" class="icon-btn remove-row">✕</button></td>
-  </tr>`;
+  // Clear medicine textarea
+  const rxMed = document.getElementById('rxMedicines');
+  if (rxMed) rxMed.value = '';
+  // Clear treatment history
   document.getElementById('rx-history-tbody').innerHTML =
     '<tr class="empty-row"><td colspan="8">Select a patient to view treatment history</td></tr>';
   // Set today's date
@@ -397,21 +490,8 @@ function resetRxForm() {
 }
 
 /* ════════════════════════════════════════════════════════════
-   9.  MEDICINE ROW HELPERS
+   9.  MEDICINE ROW HELPERS  (kept for legacy; table replaced by textarea)
    ════════════════════════════════════════════════════════════ */
-
-function addMedRow() {
-  const tbody = document.getElementById('rxMedTbody');
-  if (!tbody) return;
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td><input type="text" placeholder="Medicine name" list="med-datalist"/></td>
-    <td><input type="text" placeholder="e.g. 1 bottle"/></td>
-    <td><input type="text" placeholder="e.g. 5 drops"/></td>
-    <td><input type="text" placeholder="e.g. Twice daily"/></td>
-    <td><button type="button" class="icon-btn remove-row">✕</button></td>`;
-  tbody.appendChild(row);
-}
 
 document.addEventListener('click', e => {
   if (e.target.classList.contains('remove-row')) e.target.closest('tr')?.remove();
@@ -421,27 +501,59 @@ document.addEventListener('click', e => {
    10. DASHBOARD STATS & SEARCH
    ════════════════════════════════════════════════════════════ */
 
+/**
+ * Parse a YYYY-MM-DD string to a local-midnight Date.
+ * Using new Date("YYYY-MM-DD") parses as UTC and shifts the
+ * day back by the timezone offset in IST (+5:30) and similar
+ * positive-offset zones. This helper avoids that.
+ */
+function parseDateLocal(str) {
+  if (!str) return null;
+  // Accept YYYY-MM-DD
+  const m = String(str).match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  return null;
+}
+
 function updateDashboardStats() {
-  const allRx   = loadStore('all-prescriptions');
-  const today   = new Date(); today.setHours(0,0,0,0);
-  const todayStr = today.toISOString().slice(0,10);
-  const weekAgo  = new Date(today); weekAgo.setDate(today.getDate() - 6);
-  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+  const allRx = loadStore('all-prescriptions');
+
+  // Build today's date at local midnight
+  const now   = new Date();
+  const todayY = now.getFullYear();
+  const todayM = now.getMonth();
+  const todayD = now.getDate();
+  const todayStr = `${todayY}-${String(todayM+1).padStart(2,'0')}-${String(todayD).padStart(2,'0')}`;
+
+  // Week: last 7 days inclusive of today
+  const weekStart = new Date(todayY, todayM, todayD - 6); // 6 days ago = 7-day window
+
+  // Month: 1st of current month
+  const monthStart = new Date(todayY, todayM, 1);
 
   const todayRx = allRx.filter(r => r.date === todayStr);
-  const weekRx  = allRx.filter(r => r.date && new Date(r.date) >= weekAgo);
-  const monthRx = allRx.filter(r => r.date && new Date(r.date) >= monthStart);
+
+  const weekRx = allRx.filter(r => {
+    const d = parseDateLocal(r.date);
+    return d && d >= weekStart;
+  });
+
+  const monthRx = allRx.filter(r => {
+    const d = parseDateLocal(r.date);
+    return d && d >= monthStart;
+  });
 
   const sum = arr => arr.reduce((s, r) => s + (parseFloat(r.fees) || 0), 0);
   const fmt = n => '₹ ' + (n ? n.toLocaleString('en-IN') : '0');
-  const pCount = arr => new Set(arr.map(r => r.patient)).size;
 
+  // Patient counts = number of prescription visits (rows), not unique names.
+  // This matches the clinical meaning: "20 patients this week" = 20 consultations.
   const el = id => document.getElementById(id);
   if (el('dash-today-patients'))  el('dash-today-patients').textContent  = todayRx.length;
   if (el('dash-today-fees'))      el('dash-today-fees').textContent      = fmt(sum(todayRx));
-  if (el('dash-week-patients'))   el('dash-week-patients').textContent   = pCount(weekRx);
+  if (el('dash-week-patients'))   el('dash-week-patients').textContent   = weekRx.length;
   if (el('dash-week-fees'))       el('dash-week-fees').textContent       = fmt(sum(weekRx));
-  if (el('dash-month-patients'))  el('dash-month-patients').textContent  = pCount(monthRx);
+  if (el('dash-month-patients'))  el('dash-month-patients').textContent  = monthRx.length;
   if (el('dash-month-fees'))      el('dash-month-fees').textContent      = fmt(sum(monthRx));
 }
 
@@ -501,12 +613,24 @@ function renderYearlyStats() {
   const sel  = document.getElementById('yearly-year-select');
   const year = sel ? parseInt(sel.value) : new Date().getFullYear();
   const allRx = [...loadStore('all-prescriptions'), ...loadStore('yearly-prescriptions')];
-  const yearRx = allRx.filter(r => { const d = new Date(r.date); return !isNaN(d) && d.getFullYear() === year; });
+
+  // Use parseDateLocal to avoid UTC-offset shifting
+  const yearRx = allRx.filter(r => {
+    const d = parseDateLocal(r.date);
+    return d && d.getFullYear() === year;
+  });
 
   const monthly = MONTHS.map((m, idx) => {
-    const mRx = yearRx.filter(r => new Date(r.date).getMonth() === idx);
-    return { month: m, patients: new Set(mRx.map(r => r.patient)).size, prescriptions: mRx.length,
-             revenue: mRx.reduce((s, r) => s + (parseFloat(r.fees) || 0), 0) };
+    const mRx = yearRx.filter(r => {
+      const d = parseDateLocal(r.date);
+      return d && d.getMonth() === idx;
+    });
+    return {
+      month: m,
+      patients: new Set(mRx.map(r => r.patient)).size,
+      prescriptions: mRx.length,
+      revenue: mRx.reduce((s, r) => s + (parseFloat(r.fees) || 0), 0)
+    };
   });
 
   const tbody = document.getElementById('yearly-prescriptions-tbody');
@@ -696,7 +820,25 @@ function doImport() {
       if (!mapping[c.key]) return;
       const idx = importHeaders.indexOf(mapping[c.key]);
       let v = idx>=0 ? row[idx] : '';
-      if (v instanceof Date) v = v.toLocaleDateString('en-IN');
+      // ── Date fix: always store as YYYY-MM-DD ──────────────
+      if (v instanceof Date) {
+        // Extract local date parts to avoid UTC-offset shift
+        const yy = v.getFullYear();
+        const mm = String(v.getMonth() + 1).padStart(2, '0');
+        const dd = String(v.getDate()).padStart(2, '0');
+        v = `${yy}-${mm}-${dd}`;
+      } else if (typeof v === 'string' && v.trim()) {
+        // Normalise common Indian date formats DD/MM/YYYY or DD-MM-YYYY → YYYY-MM-DD
+        const dmySlash = v.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+        const dmyDash  = v.trim().match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+        if (c.key === 'date' || c.key === 'dob') {
+          if (dmySlash) {
+            v = `${dmySlash[3]}-${dmySlash[2].padStart(2,'0')}-${dmySlash[1].padStart(2,'0')}`;
+          } else if (dmyDash) {
+            v = `${dmyDash[3]}-${dmyDash[2].padStart(2,'0')}-${dmyDash[1].padStart(2,'0')}`;
+          }
+        }
+      }
       obj[c.key] = String(v??'').slice(0,200);
     });
     return obj;
