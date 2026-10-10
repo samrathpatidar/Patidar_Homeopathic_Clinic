@@ -12,785 +12,691 @@
 </head>
 <body class="logged-out">
 
-  <!-- ══════════════════════════════════════════════════════════
-       LOGIN PAGE
-  ══════════════════════════════════════════════════════════ -->
-  <div id="login-page" class="login-page">
-    <div class="login-card">
-      <div class="login-logo">
-        <!-- Replace logo.png with your clinic logo file in the same folder -->
-        <img src="logo.png" alt="Patidar Homoeopathic Clinic &amp; Pharmacy" class="login-logo-img"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-        <div class="login-logo-fallback" style="display:none">
-          <div class="login-logo-circle">🌿</div>
-        </div>
+<!-- ══════════════════════════════════════════════════════════
+     LOGIN PAGE
+══════════════════════════════════════════════════════════ -->
+<div id="login-page" class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="logo.png" alt="Patidar Homoeopathic Clinic" class="login-logo-img"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+      <div class="login-logo-fallback" style="display:none">
+        <div class="login-logo-circle">🌿</div>
       </div>
-      <h1 class="login-title">Patidar Homoeopathic<br>Clinic &amp; Pharmacy</h1>
-      <p class="login-subtitle">Portal Login</p>
-
-      <form id="login-form" onsubmit="handleLogin(event)" novalidate>
-        <div class="form-group">
-          <label for="login-email">Email ID</label>
-          <input type="email" id="login-email" placeholder="doctor@example.com" autocomplete="username" required />
-        </div>
-        <div class="form-group" style="position:relative;">
-          <label for="login-password">Password</label>
-          <input type="password" id="login-password" placeholder="••••••••••••" autocomplete="current-password" required />
-          <button type="button" class="pwd-toggle" onclick="togglePwd()" title="Show/hide password" aria-label="Toggle password visibility">👁</button>
-        </div>
-        <p class="login-error" id="login-error" hidden>Incorrect email or password. Please try again.</p>
-        <button type="submit" class="btn btn-primary btn-login">Sign In</button>
-      </form>
-
-      <p class="login-footer-note">© 2026 Patidar Homoeopathic Clinic &amp; Pharmacy</p>
     </div>
+    <h1 class="login-title">Patidar Homoeopathic<br>Clinic &amp; Pharmacy</h1>
+    <p class="login-subtitle">Portal Login</p>
+    <form id="login-form" onsubmit="handleLogin(event)" novalidate>
+      <div class="form-group">
+        <label for="login-email">Email ID</label>
+        <input type="email" id="login-email" placeholder="doctor@example.com" autocomplete="username" required />
+      </div>
+      <div class="form-group" style="position:relative;">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="••••••••••••" autocomplete="current-password" required />
+        <button type="button" class="pwd-toggle" onclick="togglePwd()" aria-label="Toggle password">👁</button>
+      </div>
+      <p class="login-error" id="login-error" hidden>Incorrect email or password. Please try again.</p>
+      <button type="submit" class="btn btn-primary btn-login">Sign In</button>
+    </form>
+    <p class="login-footer-note">© 2026 Patidar Homoeopathic Clinic &amp; Pharmacy</p>
   </div>
+</div>
 
-  <!-- ══════════════════════════════════════════════════════════
-       MAIN APP  (hidden until logged in)
-  ══════════════════════════════════════════════════════════ -->
-  <div id="app" hidden>
+<!-- ══════════════════════════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════════════════════════ -->
+<div id="app" hidden>
 
-    <!-- ── TOP NAV ─────────────────────────────────────────── -->
-    <header class="topbar">
-      <div class="topbar__brand">
-        <img src="logo.png" alt="Patidar Homoeopathic Clinic" class="topbar-logo"
+  <!-- TOP NAV -->
+  <header class="topbar">
+    <div class="topbar__brand">
+      <img src="logo.png" alt="Patidar Homoeopathic Clinic" class="topbar-logo"
            onerror="this.style.display='none'" />
-        <span class="brand-name">Patidar Homoeopathic Clinic</span>
+      <span class="brand-name">Patidar Homoeopathic Clinic</span>
+    </div>
+    <nav class="topbar__nav" id="mainNav">
+      <div class="nav-item">
+        <button class="nav-btn" data-page="dashboard">Dashboard</button>
+      </div>
+      <div class="nav-item">
+        <button class="nav-btn" data-page="all-patients">All Patients</button>
+      </div>
+      <div class="nav-item">
+        <button class="nav-btn" data-page="all-prescriptions">All Prescriptions</button>
+      </div>
+      <div class="nav-item">
+        <button class="nav-btn" data-page="all-medicines">All Medicines</button>
+      </div>
+    </nav>
+    <div class="topbar__user">
+      <div class="user-avatar">NP</div>
+      <div class="user-info">
+        <span class="user-name">Dr. Nemichand Patidar</span>
+        <span class="user-email">dr.ncpatidar@gmail.com</span>
+      </div>
+      <button class="sign-out-btn" onclick="handleLogout()">Sign out</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+
+    <!-- ═══════════════════════════════════════════════════════
+         DASHBOARD
+    ═══════════════════════════════════════════════════════ -->
+    <section id="dashboard" class="page">
+
+      <!-- Search row — matches the image layout -->
+      <div class="dash-search-row">
+        <div class="dash-search-box">
+          <div class="dash-search-logo">
+            <img src="logo.png" alt="" class="dash-search-logo-img"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+            <span style="display:none;font-size:1.6rem;">🌿</span>
+          </div>
+          <input type="search" class="dash-search-input" id="dash-patient-search"
+                 placeholder="Search Patient" oninput="dashSearch('patient',this.value)" />
+          <button class="dash-search-btn" onclick="dashSearch('patient', document.getElementById('dash-patient-search').value)">Search</button>
+        </div>
+        <div class="dash-search-box">
+          <div class="dash-search-logo">
+            <img src="logo.png" alt="" class="dash-search-logo-img"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+            <span style="display:none;font-size:1.6rem;">🌿</span>
+          </div>
+          <input type="search" class="dash-search-input" id="dash-rx-search"
+                 placeholder="Search Prescription" oninput="dashSearch('rx',this.value)" />
+          <button class="dash-search-btn" onclick="dashSearch('rx', document.getElementById('dash-rx-search').value)">Search</button>
+        </div>
       </div>
 
-      <nav class="topbar__nav" id="mainNav">
-        <!-- Dashboard -->
-        <div class="nav-item">
-          <button class="nav-btn active" data-page="dashboard">Dashboard</button>
+      <!-- Stats grid — 3 rows × 2 cols matching the image -->
+      <div class="dash-stats-grid">
+        <!-- Row 1 -->
+        <div class="dash-stat-card dash-stat-left">
+          <div class="dash-stat-number" id="dash-today-patients">0</div>
+          <div class="dash-stat-icon dash-icon-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="dash-stat-label">Today's Patients</div>
+        </div>
+        <div class="dash-stat-card dash-stat-right">
+          <div class="dash-stat-icon-circle dash-circle-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+              <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+            </svg>
+          </div>
+          <div class="dash-stat-right-text">
+            <div class="dash-stat-sublabel">Today's Total Fees</div>
+            <div class="dash-stat-bignum" id="dash-today-fees">₹ 0</div>
+          </div>
         </div>
 
-        <!-- Patients dropdown -->
-        <div class="nav-item dropdown">
-          <button class="nav-btn" data-page="patients">Patients <span class="caret">▾</span></button>
-          <ul class="dropdown-menu">
-            <li><a href="#" data-page="add-patient">Add Patient</a></li>
-            <li><a href="#" data-page="all-patients">All Patients</a></li>
-            <li><a href="#" data-page="revisit-patients">Revisit Patients</a></li>
-            <li><a href="#" data-page="one-time-patients">One Time Patients</a></li>
-          </ul>
+        <!-- Row 2 -->
+        <div class="dash-stat-card dash-stat-left">
+          <div class="dash-stat-number" id="dash-week-patients">0</div>
+          <div class="dash-stat-icon dash-icon-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="dash-stat-label">Patients This Week</div>
+        </div>
+        <div class="dash-stat-card dash-stat-right">
+          <div class="dash-stat-icon-circle dash-circle-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="dash-stat-right-text">
+            <div class="dash-stat-sublabel">This week Total Fees</div>
+            <div class="dash-stat-bignum" id="dash-week-fees">₹ 0</div>
+          </div>
         </div>
 
-        <!-- All Patients direct button -->
-        <div class="nav-item">
-          <button class="nav-btn" data-page="all-patients">All Patients</button>
+        <!-- Row 3 -->
+        <div class="dash-stat-card dash-stat-left">
+          <div class="dash-stat-number" id="dash-month-patients">0</div>
+          <div class="dash-stat-icon dash-icon-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="dash-stat-label">Total Patients This Month</div>
+        </div>
+        <div class="dash-stat-card dash-stat-right">
+          <div class="dash-stat-icon-circle dash-circle-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="dash-stat-right-text">
+            <div class="dash-stat-sublabel">Total Fees This Month</div>
+            <div class="dash-stat-bignum" id="dash-month-fees">₹ 0</div>
+          </div>
         </div>
 
-        <!-- All Prescriptions direct button -->
-        <div class="nav-item">
-          <button class="nav-btn" data-page="all-prescriptions">All Prescriptions</button>
+        <!-- Row 4 — buttons row -->
+        <div class="dash-stat-card dash-btn-cell">
+          <button class="dash-action-btn" data-page="yearly-prescriptions">Monthly Data</button>
         </div>
-
-        <!-- Prescriptions dropdown -->
-        <div class="nav-item dropdown">
-          <button class="nav-btn" data-page="prescriptions">Prescriptions <span class="caret">▾</span></button>
-          <ul class="dropdown-menu">
-            <li><a href="#" data-page="create-prescription">Create Prescription</a></li>
-            <li><a href="#" data-page="all-prescriptions">All Prescriptions</a></li>
-            <li><a href="#" data-page="yearly-prescriptions">Yearly Prescriptions</a></li>
-            <li><a href="#" data-page="appointments">Appointments</a></li>
-          </ul>
+        <div class="dash-stat-card dash-btn-cell">
+          <button class="dash-action-btn" data-page="yearly-prescriptions">Yearly Data</button>
         </div>
-
-        <!-- Medicines dropdown -->
-        <div class="nav-item dropdown">
-          <button class="nav-btn" data-page="medicines">Medicines <span class="caret">▾</span></button>
-          <ul class="dropdown-menu">
-            <li><a href="#" data-page="add-medicine">Add Medicine</a></li>
-            <li><a href="#" data-page="all-medicines">All Medicines</a></li>
-          </ul>
-        </div>
-      </nav>
-
-      <div class="topbar__user">
-        <div class="user-avatar">NP</div>
-        <div class="user-info">
-          <span class="user-name">Dr. Nemichand Patidar</span>
-          <span class="user-email">dr.ncpatidar@gmail.com</span>
-        </div>
-        <button class="sign-out-btn" onclick="handleLogout()">Sign out</button>
       </div>
-    </header>
 
-    <!-- ── PAGE CONTENT ─────────────────────────────────────── -->
-    <main class="page-content">
+      <!-- Quick action buttons — Add Patient / Add Prescription / Add Medicine -->
+      <div class="dash-quick-row">
+        <button class="dash-quick-btn" data-page="add-patient">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>
+          </svg>
+          Add Patient
+        </button>
+        <button class="dash-quick-btn" data-page="create-prescription">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/>
+            <line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+          Add Prescription
+        </button>
+        <button class="dash-quick-btn" data-page="add-medicine">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <path d="M10.5 20H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6"/>
+            <circle cx="17" cy="17" r="5"/><line x1="17" y1="14" x2="17" y2="20"/>
+            <line x1="14" y1="17" x2="20" y2="17"/>
+          </svg>
+          Add Medicine
+        </button>
+      </div>
 
-      <!-- ═══ DASHBOARD ══════════════════════════════════════ -->
-      <section id="dashboard" class="page active">
-        <div class="page-header">
-          <h1>Dashboard</h1>
-          <p class="page-subtitle">Welcome back, Dr. Patidar</p>
+      <!-- Search results panel (shown when searching) -->
+      <div id="dash-search-results" class="dash-search-results" hidden>
+        <div class="table-toolbar" style="padding:.75rem 1rem;">
+          <span id="dash-search-results-label" class="section-label"></span>
+          <button class="btn btn-secondary btn-sm" onclick="closeDashSearch()">✕ Clear</button>
         </div>
+        <div class="table-wrap">
+          <table class="data-table"><thead id="dash-results-head"></thead><tbody id="dash-results-body"></tbody></table>
+        </div>
+      </div>
 
-        <div class="stats-grid">
-          <div class="stat-card stat-blue">
-            <div class="stat-value" id="dash-today-patients">0</div>
-            <div class="stat-label">Today's Patients</div>
-            <div class="stat-icon">👤</div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         ADD PATIENT
+    ═══════════════════════════════════════════════════════ -->
+    <section id="add-patient" class="page">
+      <div class="page-header">
+        <h1>Add Patient</h1>
+        <p class="page-subtitle">Register a new patient record</p>
+      </div>
+      <form class="form-card" id="add-patient-form" onsubmit="savePatient(event)">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="patientName">Patient Name <span class="req">*</span></label>
+            <input type="text" id="patientName" placeholder="Full name" required />
           </div>
-          <div class="stat-card stat-green">
-            <div class="stat-value" id="dash-today-fees">₹ 0</div>
-            <div class="stat-label">Today's Total Fees</div>
-            <div class="stat-icon">💰</div>
+          <div class="form-group">
+            <label for="patientDOB">Date of Birth <span class="req">*</span></label>
+            <input type="date" id="patientDOB" required onchange="calcPatientAge()" />
           </div>
-          <div class="stat-card stat-purple">
-            <div class="stat-value" id="dash-week-patients">—</div>
-            <div class="stat-label">Patients This Week</div>
-            <div class="stat-icon">📅</div>
+          <div class="form-group">
+            <label for="patientAgeDisplay">Age (auto-calculated)</label>
+            <input type="text" id="patientAgeDisplay" placeholder="Select date of birth" readonly />
           </div>
-          <div class="stat-card stat-orange">
-            <div class="stat-value" id="dash-week-fees">—</div>
-            <div class="stat-label">This Week Total Fees</div>
-            <div class="stat-icon">💳</div>
+          <div class="form-group">
+            <label>Gender</label>
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="gender" value="Male" /> Male</label>
+              <label class="radio-label"><input type="radio" name="gender" value="Female" /> Female</label>
+              <label class="radio-label"><input type="radio" name="gender" value="Other" /> Other</label>
+            </div>
           </div>
-          <div class="stat-card stat-teal">
-            <div class="stat-value" id="dash-month-patients">—</div>
-            <div class="stat-label">Total Patients This Month</div>
-            <div class="stat-icon">🏥</div>
+          <div class="form-group">
+            <label for="patientPhone">Phone</label>
+            <div class="input-prefix-wrap">
+              <span class="input-prefix">+91</span>
+              <input type="tel" id="patientPhone" placeholder="10-digit number" maxlength="10" />
+            </div>
           </div>
-          <div class="stat-card stat-red">
-            <div class="stat-value" id="dash-month-fees">—</div>
-            <div class="stat-label">Total Fees This Month</div>
-            <div class="stat-icon">📈</div>
+          <div class="form-group full-width">
+            <label for="patientAddress">Address</label>
+            <textarea id="patientAddress" rows="2" placeholder="Street, City, State"></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label for="pastConditions">Past Medical Conditions</label>
+            <textarea id="pastConditions" rows="3" placeholder="Describe previous illnesses, conditions…"></textarea>
           </div>
         </div>
+        <div class="form-actions">
+          <button type="reset" class="btn btn-secondary" onclick="resetPatientForm()">Reset</button>
+          <button type="submit" class="btn btn-primary">Save Patient</button>
+        </div>
+      </form>
+    </section>
 
-        <!-- Quick Actions only -->
-        <div class="quick-actions-standalone">
-          <h3 class="qa-heading">Quick Actions</h3>
-          <div class="quick-actions">
-            <button class="qa-btn" data-page="add-patient">
-              <span class="qa-icon">👤</span>
-              <span>Add Patient</span>
-            </button>
-            <button class="qa-btn" data-page="create-prescription">
-              <span class="qa-icon">📋</span>
-              <span>Create Prescription</span>
-            </button>
-            <button class="qa-btn" data-page="add-medicine">
-              <span class="qa-icon">💊</span>
-              <span>Add Medicine</span>
-            </button>
-            <button class="qa-btn" data-page="all-patients">
-              <span class="qa-icon">📁</span>
-              <span>All Patients</span>
-            </button>
-            <button class="qa-btn" data-page="all-prescriptions">
-              <span class="qa-icon">📄</span>
-              <span>All Prescriptions</span>
-            </button>
-            <button class="qa-btn" data-page="all-medicines">
-              <span class="qa-icon">🧪</span>
-              <span>All Medicines</span>
-            </button>
+    <!-- ═══════════════════════════════════════════════════════
+         ALL PATIENTS
+    ═══════════════════════════════════════════════════════ -->
+    <section id="all-patients" class="page">
+      <div class="page-header">
+        <h1>All Patients</h1>
+        <p class="page-subtitle">Complete patient registry</p>
+      </div>
+      <div class="table-card">
+        <div class="table-toolbar">
+          <input type="search" class="search-input" placeholder="Search patients…"
+                 oninput="filterTable('all-patients-tbody', this.value)" />
+          <div class="toolbar-actions">
+            <button class="btn btn-ghost" onclick="openImport('all-patients')">📥 Import Excel</button>
+            <button class="btn btn-primary" data-page="add-patient">+ Add Patient</button>
           </div>
         </div>
-      </section>
-
-      <!-- ═══ ADD PATIENT ════════════════════════════════════ -->
-      <section id="add-patient" class="page">
-        <div class="page-header">
-          <h1>Add Patient</h1>
-          <p class="page-subtitle">Register a new patient record</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th><th>Patient Name</th><th>Age</th><th>Gender</th>
+                <th>Phone</th><th>Address</th><th>Past Medical Conditions</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="all-patients-tbody">
+              <tr class="empty-row"><td colspan="8">No patients yet — add one or import from Excel</td></tr>
+            </tbody>
+          </table>
         </div>
+      </div>
+    </section>
 
-        <form class="form-card" id="add-patient-form" onsubmit="savePatient(event)">
+    <!-- ═══════════════════════════════════════════════════════
+         CREATE PRESCRIPTION
+    ═══════════════════════════════════════════════════════ -->
+    <section id="create-prescription" class="page">
+      <div class="page-header">
+        <h1>Create Prescription</h1>
+        <p class="page-subtitle">Record a new consultation and prescription</p>
+      </div>
+      <form class="form-card" id="create-rx-form" onsubmit="savePrescription(event)">
+
+        <!-- Patient Info (auto-filled from DB) -->
+        <fieldset class="form-section">
+          <legend>Patient Information</legend>
           <div class="form-grid">
             <div class="form-group full-width">
-              <label for="patientName">Patient Name <span class="req">*</span></label>
-              <input type="text" id="patientName" placeholder="Full name" required />
-            </div>
-            <div class="form-group">
-              <label for="patientAge">Age <span class="req">*</span></label>
-              <input type="number" id="patientAge" placeholder="Years" min="0" max="120" required />
-            </div>
-            <div class="form-group">
-              <label>Gender</label>
-              <div class="radio-group">
-                <label class="radio-label"><input type="radio" name="gender" value="Male" /> Male</label>
-                <label class="radio-label"><input type="radio" name="gender" value="Female" /> Female</label>
-                <label class="radio-label"><input type="radio" name="gender" value="Other" /> Other</label>
+              <label for="rxPatient">Patient Name <span class="req">*</span></label>
+              <div class="input-with-action">
+                <select id="rxPatient" onchange="fillPatientData()" required>
+                  <option value="">— Select Patient —</option>
+                </select>
+                <button type="button" class="btn btn-ghost btn-sm" data-page="add-patient">+ New Patient</button>
               </div>
             </div>
             <div class="form-group">
-              <label for="patientPhone">Phone</label>
+              <label for="rxAge">Age (from DOB)</label>
+              <input type="text" id="rxAge" placeholder="Auto-filled" readonly />
+            </div>
+            <div class="form-group">
+              <label for="rxGenderDisplay">Gender</label>
+              <input type="text" id="rxGenderDisplay" placeholder="Auto-filled" readonly />
+            </div>
+            <div class="form-group">
+              <label for="rxPhone">Phone</label>
+              <input type="text" id="rxPhone" placeholder="Auto-filled" readonly />
+            </div>
+            <div class="form-group full-width">
+              <label for="rxAddress">Address</label>
+              <textarea id="rxAddress" rows="2" placeholder="Auto-filled" readonly></textarea>
+            </div>
+            <div class="form-group full-width">
+              <label for="rxPastConditions">Past Medical Conditions</label>
+              <textarea id="rxPastConditions" rows="2" placeholder="Auto-filled from patient record" readonly></textarea>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Treatment History (auto-loaded from DB) -->
+        <fieldset class="form-section">
+          <legend>Treatment History</legend>
+          <div class="table-wrap">
+            <table class="data-table" id="rx-history-table">
+              <thead>
+                <tr><th>Date</th><th>Symptoms</th><th>BP</th><th>Sugar</th><th>Weight</th><th>Medicines</th><th>Duration</th><th>Fees</th></tr>
+              </thead>
+              <tbody id="rx-history-tbody">
+                <tr class="empty-row"><td colspan="8">Select a patient to view treatment history</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </fieldset>
+
+        <!-- Prescription Details -->
+        <fieldset class="form-section">
+          <legend>Prescription Details</legend>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="rxDate">Date <span class="req">*</span></label>
+              <input type="date" id="rxDate" required />
+            </div>
+            <div class="form-group full-width">
+              <label for="rxSymptoms">Current Symptoms</label>
+              <textarea id="rxSymptoms" rows="3" placeholder="Describe presenting symptoms…"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="rxBP">Blood Pressure</label>
+              <input type="text" id="rxBP" placeholder="e.g. 120/80" />
+            </div>
+            <div class="form-group">
+              <label for="rxSugar">Sugar (mg/dL)</label>
+              <input type="text" id="rxSugar" placeholder="e.g. 110" />
+            </div>
+            <div class="form-group">
+              <label for="rxWeight">Weight (Kg)</label>
+              <input type="number" id="rxWeight" placeholder="kg" min="0" step="0.1" />
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Medicine Log -->
+        <fieldset class="form-section">
+          <legend>Medicine Log</legend>
+          <div class="table-wrap">
+            <table class="data-table" id="rxMedTable">
+              <thead>
+                <tr>
+                  <th>Medicine <span class="req">*</span></th>
+                  <th>Quantity</th><th>Dose</th><th>Frequency</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="rxMedTbody">
+                <tr>
+                  <td><input type="text" placeholder="Medicine name" list="med-datalist" /></td>
+                  <td><input type="text" placeholder="e.g. 1 bottle" /></td>
+                  <td><input type="text" placeholder="e.g. 5 drops" /></td>
+                  <td><input type="text" placeholder="e.g. Twice daily" /></td>
+                  <td><button type="button" class="icon-btn remove-row">✕</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <datalist id="med-datalist"></datalist>
+            <button type="button" class="add-row-btn" onclick="addMedRow()">+ Add Medicine</button>
+          </div>
+        </fieldset>
+
+        <!-- Course Details -->
+        <fieldset class="form-section">
+          <legend>Course Details</legend>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="rxDuration">Course Duration (Days) <span class="req">*</span></label>
+              <input type="number" id="rxDuration" placeholder="Days" min="1" required />
+            </div>
+            <div class="form-group">
+              <label for="rxNextAppt">Next Appointment</label>
+              <input type="date" id="rxNextAppt" />
+            </div>
+            <div class="form-group">
+              <label for="rxFees">Fees <span class="req">*</span></label>
               <div class="input-prefix-wrap">
-                <span class="input-prefix">+91</span>
-                <input type="tel" id="patientPhone" placeholder="10-digit number" maxlength="10" />
+                <span class="input-prefix">₹</span>
+                <input type="number" id="rxFees" placeholder="0.00" min="0" required />
               </div>
             </div>
-            <div class="form-group full-width">
-              <label for="patientAddress">Address</label>
-              <textarea id="patientAddress" rows="2" placeholder="Street, City, State"></textarea>
-            </div>
-            <div class="form-group full-width">
-              <label for="pastConditions">Past Medical Conditions</label>
-              <textarea id="pastConditions" rows="3" placeholder="Describe previous illnesses, conditions…"></textarea>
-            </div>
           </div>
+        </fieldset>
 
-          <div class="form-actions">
-            <button type="reset" class="btn btn-secondary">Reset</button>
-            <button type="submit" class="btn btn-primary">Save Patient</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- ═══ ALL PATIENTS ═══════════════════════════════════ -->
-      <section id="all-patients" class="page">
-        <div class="page-header">
-          <h1>All Patients</h1>
-          <p class="page-subtitle">Complete patient registry</p>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="resetRxForm()">Reset</button>
+          <button type="submit" class="btn btn-primary">Save Prescription</button>
         </div>
-        <div class="table-card">
-          <div class="table-toolbar">
-            <input type="search" class="search-input" placeholder="Search patients…"
-                   oninput="filterTable('all-patients-tbody', this.value)" />
-            <div class="toolbar-actions">
-              <button class="btn btn-ghost" onclick="openImport('all-patients')">📥 Import Excel</button>
-              <button class="btn btn-primary" data-page="add-patient">+ Add Patient</button>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>Age</th>
-                  <th>Gender</th>
-                  <th>Phone</th>
-                  <th>Address</th>
-                  <th>Past Conditions</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="all-patients-tbody">
-                <tr class="empty-row">
-                  <td colspan="8">No patients yet — add one or import from Excel</td>
-                </tr>
-              </tbody>
-            </table>
+      </form>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         ALL PRESCRIPTIONS
+    ═══════════════════════════════════════════════════════ -->
+    <section id="all-prescriptions" class="page">
+      <div class="page-header">
+        <h1>All Prescriptions</h1>
+        <p class="page-subtitle">Complete prescription records</p>
+      </div>
+      <div class="table-card">
+        <div class="table-toolbar">
+          <input type="search" class="search-input" placeholder="Search by patient name…"
+                 oninput="filterTable('all-prescriptions-tbody', this.value)" />
+          <div class="toolbar-actions">
+            <button class="btn btn-ghost" onclick="openImport('all-prescriptions')">📥 Import Excel</button>
+            <button class="btn btn-primary" data-page="create-prescription">+ Create Prescription</button>
           </div>
         </div>
-      </section>
-
-      <!-- ═══ REVISIT PATIENTS ═══════════════════════════════ -->
-      <section id="revisit-patients" class="page">
-        <div class="page-header">
-          <h1>Revisit Patients</h1>
-          <p class="page-subtitle">Patients who have visited more than once</p>
-        </div>
-        <div class="table-card">
-          <div class="table-toolbar">
-            <input type="search" class="search-input" placeholder="Search…"
-                   oninput="filterTable('revisit-patients-tbody', this.value)" />
-            <button class="btn btn-ghost" onclick="openImport('revisit-patients')">📥 Import Excel</button>
-          </div>
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr><th>#</th><th>Name</th><th>Age</th><th>Phone</th><th>Total Visits</th><th>Last Visit</th><th>Actions</th></tr>
-              </thead>
-              <tbody id="revisit-patients-tbody">
-                <tr class="empty-row"><td colspan="7">No revisit patients yet — import from Excel</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- ═══ ONE TIME PATIENTS ══════════════════════════════ -->
-      <section id="one-time-patients" class="page">
-        <div class="page-header">
-          <h1>One Time Patients</h1>
-          <p class="page-subtitle">Patients with a single visit</p>
-        </div>
-        <div class="table-card">
-          <div class="table-toolbar">
-            <input type="search" class="search-input" placeholder="Search…"
-                   oninput="filterTable('one-time-patients-tbody', this.value)" />
-            <button class="btn btn-ghost" onclick="openImport('one-time-patients')">📥 Import Excel</button>
-          </div>
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr><th>#</th><th>Name</th><th>Age</th><th>Phone</th><th>Visit Date</th><th>Fees</th><th>Actions</th></tr>
-              </thead>
-              <tbody id="one-time-patients-tbody">
-                <tr class="empty-row"><td colspan="7">No one-time patients recorded — import from Excel</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- ═══ CREATE PRESCRIPTION ════════════════════════════ -->
-      <section id="create-prescription" class="page">
-        <div class="page-header">
-          <h1>Create Prescription</h1>
-          <p class="page-subtitle">Record a new consultation and prescription</p>
-        </div>
-
-        <form class="form-card" id="create-rx-form" onsubmit="savePrescription(event)">
-
-          <!-- Patient Info -->
-          <fieldset class="form-section">
-            <legend>Patient Information</legend>
-            <div class="form-grid">
-              <div class="form-group full-width">
-                <label for="rxPatient">Patient Name <span class="req">*</span></label>
-                <div class="input-with-action">
-                  <input type="text" id="rxPatient" placeholder="Type patient name…" list="patient-datalist" required />
-                  <datalist id="patient-datalist"></datalist>
-                  <button type="button" class="btn btn-ghost btn-sm" data-page="add-patient">+ New Patient</button>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="rxAge">Age</label>
-                <input type="number" id="rxAge" placeholder="Years" min="0" max="120" />
-              </div>
-              <div class="form-group">
-                <label>Gender</label>
-                <div class="radio-group">
-                  <label class="radio-label"><input type="radio" name="rxGender" value="Male" /> Male</label>
-                  <label class="radio-label"><input type="radio" name="rxGender" value="Female" /> Female</label>
-                  <label class="radio-label"><input type="radio" name="rxGender" value="Other" /> Other</label>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="rxPhone">Phone</label>
-                <div class="input-prefix-wrap">
-                  <span class="input-prefix">+91</span>
-                  <input type="tel" id="rxPhone" placeholder="10-digit number" maxlength="10" />
-                </div>
-              </div>
-              <div class="form-group full-width">
-                <label for="rxAddress">Address</label>
-                <textarea id="rxAddress" rows="2" placeholder="Street, City, State"></textarea>
-              </div>
-              <div class="form-group full-width">
-                <label for="rxPastConditions">Past Medical Conditions</label>
-                <textarea id="rxPastConditions" rows="2" placeholder="Previous illnesses, conditions…"></textarea>
-              </div>
-            </div>
-          </fieldset>
-
-          <!-- Prescription Details -->
-          <fieldset class="form-section">
-            <legend>Prescription Details</legend>
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="rxDate">Date <span class="req">*</span></label>
-                <input type="date" id="rxDate" required />
-              </div>
-              <div class="form-group full-width">
-                <label for="rxSymptoms">Current Symptoms</label>
-                <textarea id="rxSymptoms" rows="3" placeholder="Describe presenting symptoms…"></textarea>
-              </div>
-              <div class="form-group">
-                <label for="rxBP">Blood Pressure</label>
-                <input type="text" id="rxBP" placeholder="e.g. 120/80" />
-              </div>
-              <div class="form-group">
-                <label for="rxSugar">Sugar (mg/dL)</label>
-                <input type="text" id="rxSugar" placeholder="e.g. 110" />
-              </div>
-              <div class="form-group">
-                <label for="rxWeight">Weight (Kg)</label>
-                <input type="number" id="rxWeight" placeholder="kg" min="0" />
-              </div>
-              <div class="form-group full-width">
-                <label for="rxReports">Medical Reports</label>
-                <input type="file" id="rxReports" accept=".pdf,.jpg,.png,.jpeg" />
-              </div>
-            </div>
-          </fieldset>
-
-          <!-- Medicine Log -->
-          <fieldset class="form-section">
-            <legend>Medicine Log</legend>
-            <div class="table-wrap">
-              <table class="data-table" id="rxMedTable">
-                <thead>
-                  <tr>
-                    <th>Medicine <span class="req">*</span></th>
-                    <th>Quantity</th>
-                    <th>Dose</th>
-                    <th>Dosage Frequency</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><input type="text" placeholder="Medicine name" /></td>
-                    <td><input type="text" placeholder="e.g. 1 bottle" /></td>
-                    <td><input type="text" placeholder="e.g. 5 drops" /></td>
-                    <td><input type="text" placeholder="e.g. Twice daily" /></td>
-                    <td><button type="button" class="icon-btn remove-row">✕</button></td>
-                  </tr>
-                </tbody>
-              </table>
-              <button type="button" class="add-row-btn" onclick="addMedRow()">+ Add Medicine</button>
-            </div>
-          </fieldset>
-
-          <!-- Course Details -->
-          <fieldset class="form-section">
-            <legend>Course Details</legend>
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="rxDuration">Course Duration (Days) <span class="req">*</span></label>
-                <input type="number" id="rxDuration" placeholder="Days" min="1" required />
-              </div>
-              <div class="form-group">
-                <label for="rxNextAppt">Next Appointment</label>
-                <input type="date" id="rxNextAppt" />
-              </div>
-              <div class="form-group">
-                <label for="rxFees">Fees <span class="req">*</span></label>
-                <div class="input-prefix-wrap">
-                  <span class="input-prefix">₹</span>
-                  <input type="number" id="rxFees" placeholder="0.00" min="0" required />
-                </div>
-              </div>
-              <div class="form-group checkbox-group">
-                <label class="checkbox-label">
-                  <input type="checkbox" id="rxRepeatMeds" /> Repeat same medicines
-                </label>
-              </div>
-            </div>
-          </fieldset>
-
-          <div class="form-actions">
-            <button type="reset" class="btn btn-secondary">Reset</button>
-            <button type="submit" class="btn btn-primary">Save Prescription</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- ═══ ALL PRESCRIPTIONS ══════════════════════════════ -->
-      <section id="all-prescriptions" class="page">
-        <div class="page-header">
-          <h1>All Prescriptions</h1>
-          <p class="page-subtitle">Complete prescription records</p>
-        </div>
-        <div class="table-card">
-          <div class="table-toolbar">
-            <input type="search" class="search-input" placeholder="Search by patient name…"
-                   oninput="filterTable('all-prescriptions-tbody', this.value)" />
-            <div class="toolbar-actions">
-              <button class="btn btn-ghost" onclick="openImport('all-prescriptions')">📥 Import Excel</button>
-              <button class="btn btn-primary" data-page="create-prescription">+ Create Prescription</button>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>#</th><th>Patient</th><th>Date</th><th>Symptoms</th>
-                  <th>Medicines</th><th>Fees</th><th>Next Appt.</th><th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="all-prescriptions-tbody">
-                <tr class="empty-row"><td colspan="8">No prescriptions found — import from Excel</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- ═══ YEARLY PRESCRIPTIONS ═══════════════════════════ -->
-      <section id="yearly-prescriptions" class="page">
-        <div class="page-header">
-          <h1>Yearly Prescriptions</h1>
-          <p class="page-subtitle">Annual prescription and revenue overview</p>
-        </div>
-        <div class="table-card">
-          <div class="table-toolbar">
-            <select class="search-input" id="yearly-year-select" style="width:auto;" onchange="renderYearlyStats()">
-              <option>2026</option><option>2025</option><option>2024</option>
-              <option>2023</option><option>2022</option>
-            </select>
-            <button class="btn btn-ghost" onclick="openImport('yearly-prescriptions')">📥 Import Excel</button>
-          </div>
-          <div class="stats-grid" style="margin-bottom:1.5rem;">
-            <div class="stat-card stat-blue">
-              <div class="stat-value" id="yearly-total-rx">—</div>
-              <div class="stat-label">Total Prescriptions</div>
-            </div>
-            <div class="stat-card stat-green">
-              <div class="stat-value" id="yearly-total-patients">—</div>
-              <div class="stat-label">Total Patients</div>
-            </div>
-            <div class="stat-card stat-orange">
-              <div class="stat-value" id="yearly-total-revenue">—</div>
-              <div class="stat-label">Total Revenue</div>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr><th>Month</th><th>Patients</th><th>Prescriptions</th><th>Revenue</th></tr>
-              </thead>
-              <tbody id="yearly-prescriptions-tbody">
-                <tr class="empty-row"><td colspan="4">Import prescription data to see yearly breakdown</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- ═══ APPOINTMENTS ═══════════════════════════════════ -->
-      <section id="appointments" class="page">
-        <div class="page-header">
-          <h1>Appointments</h1>
-          <p class="page-subtitle">Scheduled patient appointments – October 2026</p>
-        </div>
-        <div class="calendar-card">
-          <div class="calendar-nav">
-            <button class="cal-nav-btn">◀</button>
-            <span class="cal-month-label">October 2026</span>
-            <button class="cal-nav-btn">▶</button>
-            <button class="cal-today-btn">Today</button>
-          </div>
-          <div class="calendar-grid">
-            <div class="cal-day-header">Sun</div><div class="cal-day-header">Mon</div>
-            <div class="cal-day-header">Tue</div><div class="cal-day-header">Wed</div>
-            <div class="cal-day-header">Thu</div><div class="cal-day-header">Fri</div>
-            <div class="cal-day-header">Sat</div>
-            <div class="cal-cell cal-other-month">28</div>
-            <div class="cal-cell cal-other-month">29</div>
-            <div class="cal-cell cal-other-month">30</div>
-            <div class="cal-cell">1 <span class="cal-dot"></span></div>
-            <div class="cal-cell">2 <span class="cal-dot"></span></div>
-            <div class="cal-cell">3 <span class="cal-dot"></span></div>
-            <div class="cal-cell">4 <span class="cal-dot"></span></div>
-            <div class="cal-cell">5 <span class="cal-dot"></span></div>
-            <div class="cal-cell">6 <span class="cal-dot"></span></div>
-            <div class="cal-cell">7 <span class="cal-dot"></span></div>
-            <div class="cal-cell">8 <span class="cal-dot"></span></div>
-            <div class="cal-cell">9 <span class="cal-dot"></span></div>
-            <div class="cal-cell">10 <span class="cal-dot"></span></div>
-            <div class="cal-cell">11 <span class="cal-dot"></span></div>
-            <div class="cal-cell">12 <span class="cal-dot"></span></div>
-            <div class="cal-cell">13 <span class="cal-dot"></span></div>
-            <div class="cal-cell">14 <span class="cal-dot"></span></div>
-            <div class="cal-cell">15 <span class="cal-dot"></span></div>
-            <div class="cal-cell">16 <span class="cal-dot"></span></div>
-            <div class="cal-cell cal-today">17</div>
-            <div class="cal-cell">18 <span class="cal-dot"></span></div>
-            <div class="cal-cell">19</div>
-            <div class="cal-cell">20 <span class="cal-dot"></span></div>
-            <div class="cal-cell">21 <span class="cal-dot"></span></div>
-            <div class="cal-cell">22 <span class="cal-dot"></span></div>
-            <div class="cal-cell">23 <span class="cal-dot"></span></div>
-            <div class="cal-cell">24 <span class="cal-dot"></span></div>
-            <div class="cal-cell">25</div>
-            <div class="cal-cell">26 <span class="cal-dot"></span></div>
-            <div class="cal-cell">27</div>
-            <div class="cal-cell">28</div>
-            <div class="cal-cell">29 <span class="cal-dot"></span></div>
-            <div class="cal-cell">30 <span class="cal-dot"></span></div>
-            <div class="cal-cell">31</div>
-            <div class="cal-cell cal-other-month">1</div>
-          </div>
-        </div>
-        <div class="table-card" style="margin-top:1.5rem;">
-          <div class="table-toolbar">
-            <span class="section-label">Appointments on <strong id="appt-selected-date">17 Oct 2026</strong></span>
-            <div class="toolbar-actions">
-              <button class="btn btn-ghost" onclick="openImport('appointments')">📥 Import Excel</button>
-              <button class="btn btn-primary" data-page="create-prescription">+ New Appointment</button>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr><th>Patient</th><th>Age</th><th>Phone</th><th>Start Date</th><th>End Date</th><th>Actions</th></tr>
-              </thead>
-              <tbody id="appointments-tbody">
-                <tr class="empty-row"><td colspan="6">No appointments — import from Excel</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- ═══ ADD MEDICINE ═══════════════════════════════════ -->
-      <section id="add-medicine" class="page">
-        <div class="page-header">
-          <h1>Add Medicine</h1>
-          <p class="page-subtitle">Register a new medicine in the inventory</p>
-        </div>
-        <form class="form-card" id="add-medicine-form" onsubmit="saveMedicine(event)">
-          <fieldset class="form-section">
-            <legend>Medicine Details</legend>
-            <div class="form-grid">
-              <div class="form-group full-width">
-                <label for="medName">Medicine Name <span class="req">*</span></label>
-                <input type="text" id="medName" placeholder="e.g. Arnica Montana" required />
-              </div>
-              <div class="form-group full-width">
-                <label for="medInstructions">Special Instructions</label>
-                <textarea id="medInstructions" rows="4"
-                  placeholder="Dosage guidelines, storage conditions, contraindications…"></textarea>
-              </div>
-            </div>
-          </fieldset>
-          <div class="form-actions">
-            <button type="reset" class="btn btn-secondary">Reset</button>
-            <button type="submit" class="btn btn-primary">Save Medicine</button>
-          </div>
-        </form>
-      </section>
-
-      <!-- ═══ ALL MEDICINES ══════════════════════════════════ -->
-      <section id="all-medicines" class="page">
-        <div class="page-header">
-          <h1>All Medicines</h1>
-          <p class="page-subtitle">Complete medicine inventory</p>
-        </div>
-        <div class="table-card">
-          <div class="table-toolbar">
-            <input type="search" class="search-input" placeholder="Search medicines…"
-                   oninput="filterTable('all-medicines-tbody', this.value)" />
-            <div class="toolbar-actions">
-              <button class="btn btn-ghost" onclick="openImport('all-medicines')">📥 Import Excel</button>
-              <button class="btn btn-primary" data-page="add-medicine">+ Add Medicine</button>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr><th>#</th><th>Medicine Name</th><th>Special Instructions</th><th>Actions</th></tr>
-              </thead>
-              <tbody id="all-medicines-tbody">
-                <tr class="empty-row"><td colspan="4">No medicines added yet — import from Excel</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-    </main><!-- /.page-content -->
-
-    <!-- ── FOOTER ──────────────────────────────────────────── -->
-    <footer class="footer">
-      <p>© 2026 Patidar Homoeopathic Clinic &amp; Pharmacy · Dr. Nemichand Patidar · All rights reserved</p>
-    </footer>
-
-  </div><!-- /#app -->
-
-  <!-- ══════════════════════════════════════════════════════════
-       IMPORT MODAL
-  ══════════════════════════════════════════════════════════ -->
-  <div id="import-modal" class="modal-overlay" role="dialog" aria-modal="true"
-       aria-labelledby="import-modal-title" hidden>
-    <div class="modal">
-
-      <!-- Step 1: Upload -->
-      <div id="import-step-1" class="import-step">
-        <div class="modal-header">
-          <div>
-            <h2 id="import-modal-title">Import from Excel</h2>
-            <p class="modal-subtitle" id="import-target-label">Importing into: —</p>
-          </div>
-          <button class="modal-close" onclick="closeImport()" aria-label="Close">✕</button>
-        </div>
-        <div class="drop-zone" id="drop-zone"
-             ondragover="event.preventDefault();this.classList.add('drop-zone--active')"
-             ondragleave="this.classList.remove('drop-zone--active')"
-             ondrop="handleDrop(event)">
-          <div class="drop-zone__icon">📊</div>
-          <p class="drop-zone__text">Drag &amp; drop your Excel file here</p>
-          <p class="drop-zone__sub">Supports <strong>.xlsx</strong> and <strong>.xls</strong> files</p>
-          <label class="btn btn-ghost" style="margin-top:.75rem;cursor:pointer;">
-            Browse File
-            <input type="file" id="excel-file-input" accept=".xlsx,.xls" style="display:none"
-                   onchange="handleFileSelect(this)" />
-          </label>
-        </div>
-        <div class="file-info" id="file-info" hidden>
-          <span class="file-info__icon">📄</span>
-          <div class="file-info__meta">
-            <span class="file-info__name" id="file-name">—</span>
-            <span class="file-info__size" id="file-size">—</span>
-          </div>
-          <button class="icon-btn" onclick="clearFile()" title="Remove">✕</button>
-        </div>
-        <div class="import-field" id="sheet-selector-wrap" hidden>
-          <label for="sheet-selector">Sheet to import</label>
-          <select id="sheet-selector" onchange="onSheetChange()"></select>
-        </div>
-        <div class="import-tip">
-          <span class="tip-icon">💡</span>
-          <span>Not sure about the format?
-            <a href="#" onclick="downloadTemplate();return false;">Download a sample template</a>
-            for the selected section.
-          </span>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th><th>Patient Name</th><th>Age</th><th>Gender</th>
+                <th>Past Conditions</th><th>Current Symptoms</th>
+                <th>BP</th><th>Sugar</th><th>Weight</th>
+                <th>Medicine Log</th><th>Duration (Days)</th><th>Fees</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="all-prescriptions-tbody">
+              <tr class="empty-row"><td colspan="13">No prescriptions found — import from Excel</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
+    </section>
 
-      <!-- Step 2: Column Mapping -->
-      <div id="import-step-2" class="import-step" hidden>
-        <div class="modal-header">
-          <div>
-            <h2>Map Columns</h2>
-            <p class="modal-subtitle">Match your Excel columns to the app fields</p>
-          </div>
-          <button class="modal-close" onclick="closeImport()" aria-label="Close">✕</button>
-        </div>
-        <div id="column-mapper" class="column-mapper"></div>
-        <div class="preview-section">
-          <div class="preview-header">
-            <h4>Preview <span class="preview-count" id="preview-count">(0 rows)</span></h4>
-            <label class="checkbox-label" style="font-size:.82rem;">
-              <input type="checkbox" id="skip-header-chk" checked onchange="renderPreview()" />
-              First row is header
-            </label>
-          </div>
-          <div class="table-wrap preview-table-wrap">
-            <table class="data-table" id="preview-table">
-              <thead><tr id="preview-thead"></tr></thead>
-              <tbody id="preview-tbody"></tbody>
-            </table>
-          </div>
-        </div>
-        <div class="import-field">
-          <label for="duplicate-action">If a duplicate row is found</label>
-          <select id="duplicate-action">
-            <option value="skip">Skip (keep existing)</option>
-            <option value="overwrite">Overwrite existing</option>
-            <option value="append">Append anyway</option>
+    <!-- ═══════════════════════════════════════════════════════
+         YEARLY PRESCRIPTIONS (accessible via Monthly/Yearly Data buttons)
+    ═══════════════════════════════════════════════════════ -->
+    <section id="yearly-prescriptions" class="page">
+      <div class="page-header">
+        <h1>Yearly Prescriptions</h1>
+        <p class="page-subtitle">Annual prescription and revenue overview</p>
+      </div>
+      <div class="table-card">
+        <div class="table-toolbar">
+          <select class="search-input" id="yearly-year-select" style="width:auto;" onchange="renderYearlyStats()">
+            <option>2026</option><option>2025</option><option>2024</option>
+            <option>2023</option><option>2022</option>
           </select>
+          <button class="btn btn-ghost" onclick="openImport('yearly-prescriptions')">📥 Import Excel</button>
+        </div>
+        <div class="dash-stats-grid" style="margin-bottom:1.5rem;">
+          <div class="dash-stat-card dash-stat-left">
+            <div class="dash-stat-number" id="yearly-total-rx">—</div>
+            <div class="dash-stat-label">Total Prescriptions</div>
+          </div>
+          <div class="dash-stat-card dash-stat-left">
+            <div class="dash-stat-number" id="yearly-total-patients">—</div>
+            <div class="dash-stat-label">Total Patients</div>
+          </div>
+          <div class="dash-stat-card dash-stat-left">
+            <div class="dash-stat-number" id="yearly-total-revenue">—</div>
+            <div class="dash-stat-label">Total Revenue</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Month</th><th>Patients</th><th>Prescriptions</th><th>Revenue</th></tr>
+            </thead>
+            <tbody id="yearly-prescriptions-tbody">
+              <tr class="empty-row"><td colspan="4">Import prescription data to see yearly breakdown</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
+    </section>
 
-      <!-- Step 3: Result -->
-      <div id="import-step-3" class="import-step" hidden>
-        <div class="modal-header">
-          <div><h2>Import Complete</h2></div>
-          <button class="modal-close" onclick="closeImport()" aria-label="Close">✕</button>
-        </div>
-        <div class="import-result" id="import-result"></div>
+    <!-- ═══════════════════════════════════════════════════════
+         ADD MEDICINE
+    ═══════════════════════════════════════════════════════ -->
+    <section id="add-medicine" class="page">
+      <div class="page-header">
+        <h1>Add Medicine</h1>
+        <p class="page-subtitle">Register a new medicine in the inventory</p>
       </div>
+      <form class="form-card" id="add-medicine-form" onsubmit="saveMedicine(event)">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="medName">Medicine Name <span class="req">*</span></label>
+            <input type="text" id="medName" placeholder="e.g. Arnica Montana 30C" required />
+          </div>
+          <div class="form-group full-width">
+            <label for="medInstructions">Special Instructions</label>
+            <textarea id="medInstructions" rows="4"
+              placeholder="Dosage guidelines, storage conditions, contraindications…"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="reset" class="btn btn-secondary">Reset</button>
+          <button type="submit" class="btn btn-primary">Save Medicine</button>
+        </div>
+      </form>
+    </section>
 
-      <!-- Footer -->
-      <div class="modal-footer">
-        <button class="btn btn-secondary" id="import-back-btn" onclick="importBack()" hidden>← Back</button>
-        <div style="flex:1"></div>
-        <button class="btn btn-secondary" onclick="closeImport()">Cancel</button>
-        <button class="btn btn-primary" id="import-next-btn" onclick="importNext()" disabled>Next →</button>
+    <!-- ═══════════════════════════════════════════════════════
+         ALL MEDICINES
+    ═══════════════════════════════════════════════════════ -->
+    <section id="all-medicines" class="page">
+      <div class="page-header">
+        <h1>All Medicines</h1>
+        <p class="page-subtitle">Complete medicine inventory</p>
+      </div>
+      <div class="table-card">
+        <div class="table-toolbar">
+          <input type="search" class="search-input" placeholder="Search medicines…"
+                 oninput="filterTable('all-medicines-tbody', this.value)" />
+          <div class="toolbar-actions">
+            <button class="btn btn-ghost" onclick="openImport('all-medicines')">📥 Import Excel</button>
+            <button class="btn btn-primary" data-page="add-medicine">+ Add Medicine</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>#</th><th>Medicine Name</th><th>Special Instructions</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="all-medicines-tbody">
+              <tr class="empty-row"><td colspan="4">No medicines added yet — import from Excel</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Patidar Homoeopathic Clinic &amp; Pharmacy · Dr. Nemichand Patidar · All rights reserved</p>
+  </footer>
+
+</div><!-- /#app -->
+
+<!-- ══════════════════════════════════════════════════════════
+     IMPORT MODAL
+══════════════════════════════════════════════════════════ -->
+<div id="import-modal" class="modal-overlay" role="dialog" aria-modal="true"
+     aria-labelledby="import-modal-title" hidden>
+  <div class="modal">
+    <!-- Step 1 -->
+    <div id="import-step-1" class="import-step">
+      <div class="modal-header">
+        <div>
+          <h2 id="import-modal-title">Import from Excel</h2>
+          <p class="modal-subtitle" id="import-target-label">Importing into: —</p>
+        </div>
+        <button class="modal-close" onclick="closeImport()" aria-label="Close">✕</button>
+      </div>
+      <div class="drop-zone" id="drop-zone"
+           ondragover="event.preventDefault();this.classList.add('drop-zone--active')"
+           ondragleave="this.classList.remove('drop-zone--active')"
+           ondrop="handleDrop(event)">
+        <div class="drop-zone__icon">📊</div>
+        <p class="drop-zone__text">Drag &amp; drop your Excel file here</p>
+        <p class="drop-zone__sub">Supports <strong>.xlsx</strong> and <strong>.xls</strong></p>
+        <label class="btn btn-ghost" style="margin-top:.75rem;cursor:pointer;">
+          Browse File
+          <input type="file" id="excel-file-input" accept=".xlsx,.xls" style="display:none" onchange="handleFileSelect(this)" />
+        </label>
+      </div>
+      <div class="file-info" id="file-info" hidden>
+        <span class="file-info__icon">📄</span>
+        <div class="file-info__meta">
+          <span class="file-info__name" id="file-name">—</span>
+          <span class="file-info__size" id="file-size">—</span>
+        </div>
+        <button class="icon-btn" onclick="clearFile()" title="Remove">✕</button>
+      </div>
+      <div class="import-field" id="sheet-selector-wrap" hidden>
+        <label for="sheet-selector">Sheet to import</label>
+        <select id="sheet-selector" onchange="onSheetChange()"></select>
+      </div>
+      <div class="import-tip">
+        <span class="tip-icon">💡</span>
+        <span>Not sure about the format?
+          <a href="#" onclick="downloadTemplate();return false;">Download a sample template</a> for this section.
+        </span>
       </div>
     </div>
+    <!-- Step 2 -->
+    <div id="import-step-2" class="import-step" hidden>
+      <div class="modal-header">
+        <div><h2>Map Columns</h2><p class="modal-subtitle">Match your Excel columns to the app fields</p></div>
+        <button class="modal-close" onclick="closeImport()" aria-label="Close">✕</button>
+      </div>
+      <div id="column-mapper" class="column-mapper"></div>
+      <div class="preview-section">
+        <div class="preview-header">
+          <h4>Preview <span class="preview-count" id="preview-count">(0 rows)</span></h4>
+          <label class="checkbox-label" style="font-size:.82rem;">
+            <input type="checkbox" id="skip-header-chk" checked onchange="renderPreview()" /> First row is header
+          </label>
+        </div>
+        <div class="table-wrap preview-table-wrap">
+          <table class="data-table" id="preview-table">
+            <thead><tr id="preview-thead"></tr></thead>
+            <tbody id="preview-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="import-field">
+        <label for="duplicate-action">If a duplicate row is found</label>
+        <select id="duplicate-action">
+          <option value="skip">Skip (keep existing)</option>
+          <option value="overwrite">Overwrite existing</option>
+          <option value="append">Append anyway</option>
+        </select>
+      </div>
+    </div>
+    <!-- Step 3 -->
+    <div id="import-step-3" class="import-step" hidden>
+      <div class="modal-header">
+        <div><h2>Import Complete</h2></div>
+        <button class="modal-close" onclick="closeImport()" aria-label="Close">✕</button>
+      </div>
+      <div class="import-result" id="import-result"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="import-back-btn" onclick="importBack()" hidden>← Back</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-secondary" onclick="closeImport()">Cancel</button>
+      <button class="btn btn-primary" id="import-next-btn" onclick="importNext()" disabled>Next →</button>
+    </div>
   </div>
+</div>
 
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
